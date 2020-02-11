@@ -33,6 +33,14 @@ public class UserController {
       throws SignUpRestrictedException {
     signupService.validateUserByUsernameAndEmail(
         signupUserRequest.getUserName(), signupUserRequest.getEmailAddress());
+    User user = getUser(signupUserRequest);
+    User createdUser = signupService.signUp(user);
+    return new ResponseEntity<>(
+        new SignupUserResponse().id(createdUser.getUuid()).status("USER SUCCESSFULLY REGISTERED"),
+        HttpStatus.CREATED);
+  }
+
+  private User getUser(SignupUserRequest signupUserRequest) {
     User user = new User();
     user.setUuid(UUID.randomUUID().toString());
     user.setFirstName(signupUserRequest.getFirstName());
@@ -46,9 +54,6 @@ public class UserController {
     user.setDob(signupUserRequest.getDob());
     user.setContactNumber(signupUserRequest.getContactNumber());
     user.setRole(NON_ADMIN);
-    User createdUser = signupService.signUp(user);
-    return new ResponseEntity<>(
-        new SignupUserResponse().id(createdUser.getUuid()).status("USER SUCCESSFULLY REGISTERED"),
-        HttpStatus.CREATED);
+    return user;
   }
 }
