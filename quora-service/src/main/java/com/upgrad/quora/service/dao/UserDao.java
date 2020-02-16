@@ -1,7 +1,6 @@
 package com.upgrad.quora.service.dao;
 
 import com.upgrad.quora.service.entity.User;
-import com.upgrad.quora.service.entity.UserAuthToken;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -29,17 +28,12 @@ public class UserDao {
     }
   }
 
-  public UserAuthToken createAuthToken(final UserAuthToken userAuthToken) {
-    entityManager.persist(userAuthToken);
-    return userAuthToken;
-  }
-
   public User getUserByUsername(final String username) {
     try {
       return entityManager
-          .createNamedQuery("userByUsername", User.class)
-          .setParameter("username", username)
-          .getSingleResult();
+              .createNamedQuery("userByUsername", User.class)
+              .setParameter("username", username)
+              .getSingleResult();
     } catch (NoResultException noResultException) {
       return null;
     }
