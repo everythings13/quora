@@ -49,7 +49,6 @@ public class UserAuthToken {
   private ZonedDateTime loginAt;
 
   @Column(name = "logout_at")
-  @Null
   private ZonedDateTime logoutAt;
 
   public Integer getId() {
