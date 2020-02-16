@@ -5,7 +5,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
@@ -13,7 +12,7 @@ import java.time.ZonedDateTime;
 @Table(name = "user_auth")
 @NamedQueries({
   @NamedQuery(
-      name = "userAuthTokenByAccessToken",
+      name = "userAuthByAccessToken",
       query = "select ut from UserAuthToken ut where ut.accessToken = :accessToken ")
 })
 public class UserAuthToken {
@@ -49,7 +48,6 @@ public class UserAuthToken {
   private ZonedDateTime loginAt;
 
   @Column(name = "logout_at")
-  @Null
   private ZonedDateTime logoutAt;
 
   public Integer getId() {

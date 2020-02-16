@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.business;
 
+import com.upgrad.quora.service.dao.UserAuthTokenDao;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.User;
 import com.upgrad.quora.service.entity.UserAuthToken;
@@ -17,11 +18,13 @@ public class SignInAuthenticationService {
 
   @Autowired private UserDao userDao;
 
+  @Autowired private UserAuthTokenDao userAuthTokenDao;
+
   @Autowired private PasswordCryptographyProvider cryptographyProvider;
 
   @Transactional(propagation = Propagation.REQUIRED)
-  public UserAuthToken authenticate(final String username, final String password)
-      throws AuthenticationFailedException {
+  public UserAuthToken getUserAuthTokenByAuthenticating(
+      final String username, final String password) throws AuthenticationFailedException {
     User user = userDao.getUserByUsername(username);
     if (user == null) {
       throw new AuthenticationFailedException("ATH-001", "This username does not exist");
@@ -29,8 +32,7 @@ public class SignInAuthenticationService {
     final String encryptedPassword = cryptographyProvider.encrypt(password, user.getSalt());
     if (encryptedPassword.equals(user.getPassword())) {
       UserAuthToken userAuthToken = getUserAuthToken(user, encryptedPassword);
-      userDao.createAuthToken(userAuthToken);
-      return userAuthToken;
+      return userAuthTokenDao.persistUserAuthTokenEntity(userAuthToken);
     } else {
       throw new AuthenticationFailedException("ATH-002", "Password Failed");
     }
@@ -46,6 +48,7 @@ public class SignInAuthenticationService {
     userAuthToken.setUuid(UUID.randomUUID().toString());
     userAuthToken.setLoginAt(now);
     userAuthToken.setExpiresAt(expiresAt);
+    userAuthToken.setLogoutAt(null);
     return userAuthToken;
   }
 }
