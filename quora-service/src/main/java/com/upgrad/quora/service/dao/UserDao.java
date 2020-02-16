@@ -31,9 +31,20 @@ public class UserDao {
   public User getUserByUsername(final String username) {
     try {
       return entityManager
-              .createNamedQuery("userByUsername", User.class)
-              .setParameter("username", username)
-              .getSingleResult();
+          .createNamedQuery("userByUsername", User.class)
+          .setParameter("username", username)
+          .getSingleResult();
+    } catch (NoResultException noResultException) {
+      return null;
+    }
+  }
+
+  public User getUserByUuid(String userUuid) {
+    try {
+      return entityManager
+          .createNamedQuery("userByUuid", User.class)
+          .setParameter("uuid", userUuid)
+          .getSingleResult();
     } catch (NoResultException noResultException) {
       return null;
     }

@@ -15,7 +15,7 @@ public class SignOutService {
   @Autowired private UserAuthTokenDao userAuthTokenDao;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public String  getUserUuidIfPresent(String accessToken) throws SignOutRestrictedException {
+    public String getUserUuidIfPresentFromUserAuth(String accessToken) throws SignOutRestrictedException {
         UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);
         if(userAuthToken == null){
             throw new SignOutRestrictedException("SGR-001", "User is not Signed in");

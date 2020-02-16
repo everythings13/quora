@@ -59,9 +59,9 @@ public class UserController {
       path = "/signin",
       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SigninResponse> signIn(
-      @RequestHeader("encodedCredentials") final String encodedCredentials)
+      @RequestHeader("authorization") final String authorization)
       throws AuthenticationFailedException {
-    byte[] decode = Base64.getDecoder().decode(encodedCredentials.split("Basic ")[1]);
+    byte[] decode = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
     String decodedText = new String(decode);
     String[] decodedArray = decodedText.split(":");
     UserAuthToken userAuthToken =
@@ -81,9 +81,10 @@ public class UserController {
       method = RequestMethod.POST,
       path = "/signout",
       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SignoutResponse> signOut(final String accessToken)
+  public ResponseEntity<SignoutResponse> signOut(
+      @RequestHeader("authorization") final String authorization)
       throws SignOutRestrictedException {
-    String uuid = signOutService.getUserUuidIfPresent(accessToken);
+    String uuid = signOutService.getUserUuidIfPresentFromUserAuth(authorization);
     return new ResponseEntity<>(
         new SignoutResponse().id(uuid).message("SIGNED OUT SUCCESSFULLY"), HttpStatus.OK);
   }
