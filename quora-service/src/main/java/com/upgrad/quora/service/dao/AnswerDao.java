@@ -60,4 +60,10 @@ public class AnswerDao {
             return null;
         }
     }
+
+    @Transactional
+    public AnswerEntity updateAnswer(AnswerEntity answerEntity) {
+        entityManager.merge(answerEntity);
+        return answerEntity;
+    }
 }

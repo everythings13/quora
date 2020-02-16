@@ -80,30 +80,34 @@ public class AnswerBusinessService {
     }
 
     /**
-     * @param answerEntity
      * @param answerId
      * @param accessToken
+     * @param content
      * @return AnswerEntity which was edited
      * @throws AuthorizationFailedException,AnswerNotFoundException
      */
     /*
         This method is to edit AnswerEntity for given answerId after validation of User and AnswerEntity
      */
-    public AnswerEntity editAnswer(AnswerEntity answerEntity, String answerId, String accessToken) throws AuthorizationFailedException, AnswerNotFoundException {
+    public AnswerEntity editAnswer(final String answerId, final String accessToken, final String content) throws AuthorizationFailedException, AnswerNotFoundException {
         UserAuthToken userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_EDIT_AN_ANSWER);
 
         AnswerEntity answer = answerDao.getAnswerById(answerId);
+        if(answer != null)
+        {
+            if(!(answer.getUser().getUuid().equals(userAuthEntity.getUser().getUuid())))
+            {
+                throw new AuthorizationFailedException(ATHR_003,ONLY_ANSWER_OWNER_CAN_EDIT);
+            }
+        }
+
         if(answer == null || answerId == null || answer.getUuid() == null)
         {
             throw new AnswerNotFoundException(ANS_001,ANSWER_DOESNOT_EXIST);
         }
 
-        if(!(answer.getUser().getUuid().equals(userAuthEntity.getUser().getUuid())))
-        {
-            throw new AuthorizationFailedException(ATHR_003,ONLY_ANSWER_OWNER_CAN_EDIT);
-        }
-
-        return answerDao.save(answerEntity);
+        answer.setAnswer(content);
+        return answerDao.updateAnswer(answer);
     }
 
     /**
@@ -119,15 +123,18 @@ public class AnswerBusinessService {
         UserAuthToken userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_TO_DELETE);
 
         AnswerEntity answerEntity = answerDao.getAnswerById(answerId);
+        if(answerEntity != null) {
+            if (!((answerEntity.getUser().getUuid().equals(userAuthEntity.getUser().getUuid())) || (userAuthEntity.getUser().getRole().equals("admin")))) {
+                throw new AuthorizationFailedException(ATHR_003, ONLY_OWNER_OR_ADMIN_CAN_DELETE);
+            }
+        }
+
         if(answerEntity == null || answerId == null || answerEntity.getUuid() == null)
         {
             throw new AnswerNotFoundException(ANS_001,ANSWER_DOESNOT_EXIST);
         }
 
-        if(!((answerEntity.getUser().getUuid().equals(userAuthEntity.getUser().getUuid()))||(userAuthEntity.getUser().getRole().equals("admin"))))
-        {
-            throw new AuthorizationFailedException(ATHR_003,ONLY_OWNER_OR_ADMIN_CAN_DELETE);
-        }
+
 
         return answerDao.deleteAnswer(answerId);
 

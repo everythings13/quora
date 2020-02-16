@@ -54,10 +54,7 @@ public class AnswerController {
                                                                 @RequestHeader("authorization") final String accessToken,
                                                                 final AnswerRequest answerRequest)
                                                                 throws AuthorizationFailedException, AnswerNotFoundException {
-        AnswerEntity answerEntity = new AnswerEntity();
-        answerEntity.setAnswer(answerRequest.getAnswer());
-        AnswerEntity editedAnsweredEntity = answerBusinessService.editAnswer(answerEntity,answerId,accessToken);
-
+        AnswerEntity editedAnsweredEntity = answerBusinessService.editAnswer(answerId,accessToken,answerRequest.getAnswer());
         AnswerEditResponse answerEditResponse = new AnswerEditResponse().id(editedAnsweredEntity.getUuid()).status("ANSWER EDITED");
         return new ResponseEntity<AnswerEditResponse>(answerEditResponse,HttpStatus.OK);
     }
