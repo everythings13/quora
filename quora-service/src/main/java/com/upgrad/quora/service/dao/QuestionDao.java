@@ -1,9 +1,7 @@
 package com.upgrad.quora.service.dao;
 
 
-import com.upgrad.quora.service.entity.QuestionEntity;
-import com.upgrad.quora.service.entity.UserAuthEntity;
-import com.upgrad.quora.service.entity.UserEntity;
+import com.upgrad.quora.service.entity.*;
 import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.stereotype.Repository;
 
@@ -66,7 +64,7 @@ public class QuestionDao {
 
     }
     @Transactional
-    public List<QuestionEntity> getAllQuestionsByUser(UserEntity user){
+    public List<QuestionEntity> getAllQuestionsByUser(User user){
         try {
 
             return (List<QuestionEntity>) entityManager.createNamedQuery("getQuestionByUserId",QuestionEntity.class).setParameter("userId",user).getResultList();
@@ -75,18 +73,18 @@ public class QuestionDao {
         }
     }
     @Transactional
-    public UserAuthEntity getAuthToken(String accessToken){
+    public UserAuthToken getAuthToken(String accessToken){
         try {
-            return  entityManager.createNamedQuery("getUserAuthToken", UserAuthEntity.class).setParameter("accessToken", accessToken).getSingleResult();
+            return  entityManager.createNamedQuery("userAuthByAccessToken", UserAuthToken.class).setParameter("accessToken", accessToken).getSingleResult();
         }catch (NoResultException ex){
             return null;
         }
     }
 
    @Transactional
-    public UserEntity getUser(String userUuid) throws UserNotFoundException {
+    public User getUser(String userUuid) throws UserNotFoundException {
         try{
-            return entityManager.createNamedQuery("userByUuid",UserEntity.class).setParameter("uuid",userUuid).getSingleResult();
+            return entityManager.createNamedQuery("userByUuid",User.class).setParameter("uuid",userUuid).getSingleResult();
         }catch (NoResultException ex){
             throw new UserNotFoundException("USR-001","User not found");
         }

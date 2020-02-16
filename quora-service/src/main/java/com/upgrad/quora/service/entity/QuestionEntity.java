@@ -35,7 +35,7 @@ public class QuestionEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
     public Integer getId() {
         return id;
@@ -69,11 +69,11 @@ public class QuestionEntity implements Serializable {
         this.date = date;
     }
 
-    public UserEntity getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public void setUser(User user) {
         this.user = user;
     }
 }
