@@ -48,6 +48,7 @@ public class SignInAuthenticationService {
     userAuthToken.setUuid(UUID.randomUUID().toString());
     userAuthToken.setLoginAt(now);
     userAuthToken.setExpiresAt(expiresAt);
+    userAuthToken.setLogoutAt(null);
     return userAuthToken;
   }
 }
