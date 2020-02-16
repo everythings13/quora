@@ -51,4 +51,9 @@ public class ExceptionManager {
   public ResponseEntity<ErrorResponse> invalidQuestionException(InvalidQuestionException exc, WebRequest webRequest){
     return  new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(AnswerNotFoundException.class)
+  public ResponseEntity<ErrorResponse> answerNotFoundException(AnswerNotFoundException exc, WebRequest webRequest){
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),HttpStatus.NOT_FOUND);
+  }
 }

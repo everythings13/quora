@@ -4,7 +4,7 @@ import com.upgrad.quora.service.dao.AnswerDao;
 import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionEntity;
-import com.upgrad.quora.service.entity.UserAuthEntity;
+import com.upgrad.quora.service.entity.UserAuthToken;
 import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
@@ -72,8 +72,8 @@ public class AnswerBusinessService {
         This method creates and saves AnswerEntity for given question after validation of User and QuestionEntity
      */
     public AnswerEntity createAnswer(AnswerEntity answerEntity, String accessToken, String questionId) throws AuthorizationFailedException, InvalidQuestionException {
-        UserAuthEntity userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_AN_ANSWER);
         QuestionEntity questionEntity = getQuestionById(questionId);
+        UserAuthToken userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_AN_ANSWER);
         answerEntity.setUser(userAuthEntity.getUser());
         answerEntity.setQuestionEntity(questionEntity);
         return answerDao.save(answerEntity);
@@ -90,7 +90,7 @@ public class AnswerBusinessService {
         This method is to edit AnswerEntity for given answerId after validation of User and AnswerEntity
      */
     public AnswerEntity editAnswer(AnswerEntity answerEntity, String answerId, String accessToken) throws AuthorizationFailedException, AnswerNotFoundException {
-        UserAuthEntity userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_EDIT_AN_ANSWER);
+        UserAuthToken userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_EDIT_AN_ANSWER);
 
         AnswerEntity answer = answerDao.getAnswerById(answerId);
         if(answer == null || answerId == null || answer.getUuid() == null)
@@ -116,7 +116,7 @@ public class AnswerBusinessService {
         This method is to delete AnswerEntity for given answerId after validation of User and AnswerEntity
      */
     public String deleteAnswer(String answerId, String accessToken) throws AuthorizationFailedException, AnswerNotFoundException {
-        UserAuthEntity userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_TO_DELETE);
+        UserAuthToken userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_TO_DELETE);
 
         AnswerEntity answerEntity = answerDao.getAnswerById(answerId);
         if(answerEntity == null || answerId == null || answerEntity.getUuid() == null)
@@ -143,14 +143,14 @@ public class AnswerBusinessService {
         This method will provide list of all AnswerEntity for given question after validation of User and QuestionEntity
      */
     public List<AnswerEntity> getAllAnswersForQuestion(String accessToken, String questionId) throws AuthorizationFailedException, InvalidQuestionException {
-        UserAuthEntity userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_AN_ANSWER);
-
         QuestionEntity questionEntity = questionDao.getQuestionById(questionId);
 
         if(questionEntity == null || questionId == null || questionEntity.getUuid() == null)
         {
             throw new InvalidQuestionException(QUES_001,QUESTION_ENTERED_UUID_DOES_NOT_EXIST);
         }
+
+        UserAuthToken userAuthEntity = validateUserAuthEntity(accessToken,USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_AN_ANSWER);
 
         List<AnswerEntity> answerEntities = answerDao.getAllAnswersForQuestion(questionEntity);
 
@@ -167,13 +167,13 @@ public class AnswerBusinessService {
         This method will validate the access token provided and if access token is valid and user is logged in then provide the
         UserAuthEntity object
      */
-    private UserAuthEntity validateUserAuthEntity(String accessToken,String message) throws AuthorizationFailedException {
-        UserAuthEntity userAuthEntity = questionDao.getAuthToken(accessToken);
+    private UserAuthToken validateUserAuthEntity(String accessToken,String message) throws AuthorizationFailedException {
+        UserAuthToken userAuthEntity = questionDao.getAuthToken(accessToken);
         if(userAuthEntity == null || userAuthEntity.getAccessToken() == null)
         {
             throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
         }
-        else if(userAuthEntity.getLogoutAt() == null)
+        else if(userAuthEntity.getLogoutAt() != null)
         {
             throw  new AuthorizationFailedException(ATHR_002,message);
         }

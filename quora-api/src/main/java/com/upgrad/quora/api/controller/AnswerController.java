@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/answer")
+@RequestMapping("/")
 public class AnswerController {
 
     @Autowired
@@ -33,11 +33,11 @@ public class AnswerController {
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") final String questionUuid,
                                                        @RequestHeader( "authorization" ) final String accessToken,
-                                                       final AnswerRequest answerRequest)
+                                                       final String content)
             throws AuthorizationFailedException, InvalidQuestionException
     {
         AnswerEntity answerEntity = new AnswerEntity();
-        answerEntity.setAnswer(answerRequest.getAnswer());
+        answerEntity.setAnswer(content);
         answerEntity.setDate(ZonedDateTime.now());
         answerEntity.setUuid(UUID.randomUUID().toString());
         AnswerEntity createdAnswerEntity = answerBusinessService.createAnswer(answerEntity,accessToken,questionUuid);
