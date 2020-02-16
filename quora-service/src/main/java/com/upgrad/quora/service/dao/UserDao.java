@@ -49,4 +49,9 @@ public class UserDao {
       return null;
     }
   }
+
+  public User removeUser(User user) {
+    entityManager.remove(user);
+    return user;
+  }
 }

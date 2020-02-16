@@ -21,6 +21,7 @@ public class SignOutService {
             throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         }
         userAuthToken.setLogoutAt(ZonedDateTime.now());
+        userAuthTokenDao.persistUserAuthTokenEntity(userAuthToken);
         return userAuthToken.getUser().getUuid();
     }
 }

@@ -1,6 +1,5 @@
 package com.upgrad.quora.service.dao;
 
-import com.upgrad.quora.service.entity.User;
 import com.upgrad.quora.service.entity.UserAuthToken;
 import org.springframework.stereotype.Repository;
 
@@ -26,10 +25,5 @@ public class UserAuthTokenDao {
     } catch (NoResultException noResultException) {
       return null;
     }
-  }
-
-  public UserAuthToken removeUserAuthTokenEntity(final UserAuthToken userAuthToken) {
-    entityManager.remove(userAuthToken);
-    return userAuthToken;
   }
 }

@@ -30,7 +30,7 @@ import java.util.UUID;
 public class UserController {
 
   private static final String SALT = "1234abc";
-  private static final String NON_ADMIN = "nonAdmin";
+  private static final String NON_ADMIN = "nonadmin";
 
   @Autowired private SignupService signupService;
 
@@ -96,7 +96,6 @@ public class UserController {
     user.setLastName(signupUserRequest.getLastName());
     user.setEmail(signupUserRequest.getEmailAddress());
     user.setPassword(signupUserRequest.getPassword());
-    user.setSalt(SALT);
     user.setUserName(signupUserRequest.getUserName());
     user.setCountry(signupUserRequest.getCountry());
     user.setAboutMe(signupUserRequest.getAboutMe());
