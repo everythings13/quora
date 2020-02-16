@@ -32,7 +32,7 @@ public class ExceptionManager {
   }
 
   @ExceptionHandler(AuthorizationFailedException.class)
-  public ResponseEntity<ErrorResponse> authenticationFailedException(
+  public ResponseEntity<ErrorResponse> authorizationFailedException(
       AuthorizationFailedException exe) {
     return new ResponseEntity<>(
         new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
@@ -40,7 +40,7 @@ public class ExceptionManager {
   }
 
   @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<ErrorResponse> authenticationFailedException(UserNotFoundException exe) {
+  public ResponseEntity<ErrorResponse> userNotFoundException(UserNotFoundException exe) {
     return new ResponseEntity<>(
         new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
         HttpStatus.NOT_FOUND);
