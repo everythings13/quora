@@ -1,6 +1,7 @@
 package com.upgrad.quora.api.controller;
 
 import com.upgrad.quora.api.model.SigninResponse;
+import com.upgrad.quora.api.model.SignoutResponse;
 import com.upgrad.quora.api.model.SignupUserRequest;
 import com.upgrad.quora.api.model.SignupUserResponse;
 import com.upgrad.quora.service.business.SignInAuthenticationService;
@@ -76,9 +77,15 @@ public class UserController {
         HttpStatus.OK);
   }
 
-  @RequestMapping(method = RequestMethod.POST, path = "/signout")
-  public String signOut(final String accessToken) throws SignOutRestrictedException {
-    return signOutService.getUserUuidIfPresent(accessToken);
+  @RequestMapping(
+      method = RequestMethod.POST,
+      path = "/signout",
+      produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity<SignoutResponse> signOut(final String accessToken)
+      throws SignOutRestrictedException {
+    String uuid = signOutService.getUserUuidIfPresent(accessToken);
+    return new ResponseEntity<>(
+        new SignoutResponse().id(uuid).message("SIGNED OUT SUCCESSFULLY"), HttpStatus.OK);
   }
 
   private User getUser(SignupUserRequest signupUserRequest) {

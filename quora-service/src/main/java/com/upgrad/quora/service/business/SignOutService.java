@@ -16,12 +16,11 @@ public class SignOutService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public String  getUserUuidIfPresent(String accessToken) throws SignOutRestrictedException {
-        UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEnityByAccessToken(accessToken);
+        UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);
         if(userAuthToken == null){
             throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         }
-        UserAuthToken userAuthTokenEntity = userAuthTokenDao.removeUserAuthTokenEntity(userAuthToken);
-        userAuthTokenEntity.setLogoutAt(ZonedDateTime.now());
-        return userAuthTokenEntity.getUser().getUuid();
+        userAuthToken.setLogoutAt(ZonedDateTime.now());
+        return userAuthToken.getUser().getUuid();
     }
 }
