@@ -42,7 +42,7 @@ public class QuestionBusinessService {
   @Autowired private UserDao userDao;
 
   /**
-   * This method is used to create Question
+   * Returns QuestionEntity by creating new question
    *
    * @param accessToken
    * @param questionEntity

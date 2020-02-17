@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/** Author : Harika Etamukkala */
+/** Contains all the APIs for Question feature Author : Harika Etamukkala */
 @RestController
 @RequestMapping("/")
 public class QuestionController {
@@ -25,8 +25,10 @@ public class QuestionController {
   @Autowired private QuestionBusinessService questionBusinessService;
 
   /**
-   * @param content
-   * @param accessToken
+   * Returns QuestionResponse by creating new question with content provided by user
+   *
+   * @param content - content
+   * @param accessToken - used for authorization
    * @return QuestionResponse
    * @throws AuthorizationFailedException
    */
@@ -50,7 +52,9 @@ public class QuestionController {
   }
 
   /**
-   * @param accessToken
+   * Returns all questions
+   *
+   * @param accessToken - used for user authorization
    * @return QuestionDetailsResponse
    * @throws AuthorizationFailedException
    */
@@ -63,20 +67,15 @@ public class QuestionController {
       throws AuthorizationFailedException {
     List<QuestionEntity> allQuestions = questionBusinessService.getAllQuestions(accessToken);
     List<QuestionDetailsResponse> responses = new ArrayList<>();
-    allQuestions.stream()
-        .forEach(
-            question -> {
-              QuestionDetailsResponse questionDetailsResponse = new QuestionDetailsResponse();
-              questionDetailsResponse.content(question.getContent());
-              questionDetailsResponse.id(question.getUuid());
-              responses.add(questionDetailsResponse);
-            });
+    copyProperties(allQuestions, responses);
     return new ResponseEntity<List<QuestionDetailsResponse>>(responses, HttpStatus.OK);
   }
 
   /**
-   * @param questionId
-   * @param accessToken
+   * Returns QuestionEditResponse by editing question
+   *
+   * @param questionId - uuid of question
+   * @param accessToken - user authorization
    * @param content
    * @return QuestionEditResponse
    * @throws AuthorizationFailedException
@@ -102,9 +101,11 @@ public class QuestionController {
   }
 
   /**
-   * @param questionId
-   * @param accessToken
-   * @return QuestionDeleteResponse
+   * Returns QuestionDeleteResponse by deleting the question
+   *
+   * @param questionId - uuid of question
+   * @param accessToken - user authorization
+   * @return QuestionDeleteResponse - which contains uuid of deleted question and status
    * @throws AuthorizationFailedException
    * @throws InvalidQuestionException
    */
@@ -123,8 +124,10 @@ public class QuestionController {
   }
 
   /**
-   * @param userId
-   * @param accessToken
+   * Returns list of questions created by user
+   *
+   * @param userId - unique id of user
+   * @param accessToken - user authorization
    * @return list of QuestionDetailsResponse
    * @throws UserNotFoundException
    * @throws AuthorizationFailedException
@@ -141,7 +144,13 @@ public class QuestionController {
     List<QuestionEntity> questions =
         questionBusinessService.getAllQuestionsByUser(userId, accessToken);
     List<QuestionDetailsResponse> responses = new ArrayList<>();
-    questions.stream()
+    copyProperties(questions, responses);
+    return new ResponseEntity<List<QuestionDetailsResponse>>(responses, HttpStatus.OK);
+  }
+
+  private void copyProperties(
+      List<QuestionEntity> allQuestions, List<QuestionDetailsResponse> responses) {
+    allQuestions.stream()
         .forEach(
             question -> {
               QuestionDetailsResponse questionDetailsResponse = new QuestionDetailsResponse();
@@ -149,6 +158,5 @@ public class QuestionController {
               questionDetailsResponse.id(question.getUuid());
               responses.add(questionDetailsResponse);
             });
-    return new ResponseEntity<List<QuestionDetailsResponse>>(responses, HttpStatus.OK);
   }
 }
