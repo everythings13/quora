@@ -21,6 +21,14 @@ public final class MessageKeys {
             "User is signed out.Sign in first to get the answers";
     public static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION =
             "User is signed out.Sign in first to post a question";
+    public static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_EDIT_A_QUESTION =
+            "User is signed out.Sign in first to edit a question";
+    public static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_DELETE_A_QUESTION =
+            "User is signed out.Sign in first to delete a question";
+    public static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_ALL_QUESTIONS_BY_USER =
+            "User is signed out.Sign in first to get all questions posted by a specific user";
+    public static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_ALL_QUESTIONS =
+            " User is signed out.Sign in first to get all questions";
     public static final String USR_001 = "USR-001";
     public static final String ADMIN = "admin";
     public static final String USERNAME_DOES_NOT_EXIST = "This username does not exist";

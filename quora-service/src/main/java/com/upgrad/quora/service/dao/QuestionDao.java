@@ -1,6 +1,8 @@
 package com.upgrad.quora.service.dao;
 
-import com.upgrad.quora.service.entity.*;
+import com.upgrad.quora.service.entity.QuestionEntity;
+import com.upgrad.quora.service.entity.User;
+import com.upgrad.quora.service.entity.UserAuthToken;
 import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.stereotype.Repository;
 

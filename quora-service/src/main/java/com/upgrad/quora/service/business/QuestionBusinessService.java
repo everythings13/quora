@@ -3,7 +3,9 @@ package com.upgrad.quora.service.business;
 import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.dao.UserAuthTokenDao;
 import com.upgrad.quora.service.dao.UserDao;
-import com.upgrad.quora.service.entity.*;
+import com.upgrad.quora.service.entity.QuestionEntity;
+import com.upgrad.quora.service.entity.User;
+import com.upgrad.quora.service.entity.UserAuthToken;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
@@ -60,7 +62,7 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
     } else if (userAuthToken.getLogoutAt() != null) {
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_ALL_QUESTIONS);
     }
     return questionDao.getAllQuestions();
   }
@@ -82,7 +84,7 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
     } else if (userAuthToken.getLogoutAt() != null) {
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_EDIT_A_QUESTION);
     } else if (questionFromDb != null
         && !(questionFromDb.getUser().getUuid().equals(userAuthToken.getUser().getUuid()))) {
       throw new AuthorizationFailedException(
@@ -97,7 +99,7 @@ public class QuestionBusinessService {
   /**
    * @param questionId
    * @param accessToken
-   * @return
+   * @return delete question
    * @throws AuthorizationFailedException
    * @throws InvalidQuestionException
    */
@@ -105,14 +107,15 @@ public class QuestionBusinessService {
       throws AuthorizationFailedException, InvalidQuestionException {
     UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);
     QuestionEntity questionFromDb = questionDao.getQuestionById(questionId);
+    // checking whether access token provided by user exists or not
     if (userAuthToken == null || userAuthToken.getAccessToken() == null) {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
     } else if (userAuthToken.getLogoutAt() != null) {
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_DELETE_A_QUESTION);
     } else if (questionFromDb != null
         && (!(questionFromDb.getUser().getUuid().equals(userAuthToken.getUser().getUuid()))
-            || userAuthToken.getUser().getRole().equals("admin"))) {
+            || userAuthToken.getUser().getRole().equals(ADMIN))) {
       throw new AuthorizationFailedException(
           ATHR_003, ONLY_THE_QUESTION_OWNER_OR_ADMIN_CAN_DELETE_THE_QUESTION);
     } else if (questionFromDb == null) {
@@ -135,10 +138,11 @@ public class QuestionBusinessService {
 
     if (userAuthToken == null || userAuthToken.getAccessToken() == null) {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
-    } else if (userAuthToken.getLogoutAt() != null) {
+    } else if (userAuthToken.getLogoutAt() != null
+        && userAuthToken.getLoginAt().isAfter(userAuthToken.getLogoutAt())) {
 
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_ALL_QUESTIONS_BY_USER);
     }
     User userEntity = userDao.getUserByUuid(userId);
 
