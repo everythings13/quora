@@ -22,6 +22,13 @@ public class SignInAuthenticationService {
 
   @Autowired private PasswordCryptographyProvider cryptographyProvider;
 
+  /**
+   * This method returns userAuthTokenObject if username exists and if password entered in correct
+   *
+   * @param username username
+   * @param password password
+   * @return userAuthTokenObject
+   */
   @Transactional(propagation = Propagation.REQUIRED)
   public UserAuthToken getUserAuthTokenByAuthenticating(
       final String username, final String password) throws AuthenticationFailedException {

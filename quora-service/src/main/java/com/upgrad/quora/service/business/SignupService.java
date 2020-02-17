@@ -15,6 +15,12 @@ public class SignupService {
 
   @Autowired private PasswordCryptographyProvider cryptographyProvider;
 
+  /**
+   * This method returns userObject after encrypting its password
+   *
+   * @param user user
+   * @return UserObject
+   */
   @Transactional(propagation = Propagation.REQUIRED)
   public User signUp(User user) {
     String[] encryptedText = cryptographyProvider.encrypt(user.getPassword());

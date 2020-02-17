@@ -14,14 +14,21 @@ import java.time.ZonedDateTime;
 public class SignOutService {
   @Autowired private UserAuthTokenDao userAuthTokenDao;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public String getUserUuidIfPresentFromUserAuth(String accessToken) throws SignOutRestrictedException {
-        UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);
-        if(userAuthToken == null){
-            throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
-        }
-        userAuthToken.setLogoutAt(ZonedDateTime.now());
-        userAuthTokenDao.persistUserAuthTokenEntity(userAuthToken);
-        return userAuthToken.getUser().getUuid();
+  /**
+   * This method gets userUuid if userAuthTokenObject exists for given access token
+   *
+   * @param accessToken UserObject
+   * @return uuid of the user
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public String getUserUuidIfPresentFromUserAuth(String accessToken)
+      throws SignOutRestrictedException {
+    UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);
+    if (userAuthToken == null) {
+      throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
     }
+    userAuthToken.setLogoutAt(ZonedDateTime.now());
+    userAuthTokenDao.persistUserAuthTokenEntity(userAuthToken);
+    return userAuthToken.getUser().getUuid();
+  }
 }

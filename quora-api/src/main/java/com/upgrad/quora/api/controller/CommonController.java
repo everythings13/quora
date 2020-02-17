@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/userprofile")
 public class CommonController {
-  private static String MSG_WHEN_USER_SIGNED_OUT =
-      "User is signed out.Sign in first to get user details";
-  private static String MSG_WHEN_USER_NOT_FOUND = "User with entered uuid does not exist";
+
   @Autowired private UserBusinessService userBusinessService;
 
   @RequestMapping(
@@ -27,8 +25,11 @@ public class CommonController {
       @PathVariable("userId") final String userUuid,
       @RequestHeader("authorization") final String authorization)
       throws AuthorizationFailedException, UserNotFoundException {
-    userBusinessService.getUserAuthByAccessToken(authorization, MSG_WHEN_USER_SIGNED_OUT);
-    User user = userBusinessService.getValidatedGivenUser(userUuid, MSG_WHEN_USER_NOT_FOUND);
+    userBusinessService.getUserAuthByAccessToken(
+        authorization, "User is signed out.Sign in first to get user details");
+    User user =
+        userBusinessService.getValidatedGivenUser(
+            userUuid, "User with entered uuid does not exist");
     UserDetailsResponse userDetailsResponse =
         new UserDetailsResponse()
             .firstName(user.getFirstName())

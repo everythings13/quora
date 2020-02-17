@@ -15,7 +15,12 @@ public class AdminService {
   private static String ADMIN = "admin";
   @Autowired private UserDao userDao;
 
-  public void validateIfRoleIsAdmin(UserAuthToken userAuthToken, String uuid)
+  /**
+   * This method validates if role of user is admin
+   *
+   * @param userAuthToken userAuthTokenObject
+   */
+  public void validateIfRoleIsAdmin(UserAuthToken userAuthToken)
       throws AuthorizationFailedException {
     if (!userAuthToken.getUser().getRole().equals(ADMIN)) {
       throw new AuthorizationFailedException(
@@ -23,6 +28,12 @@ public class AdminService {
     }
   }
 
+  /**
+   * This method remove the user from db and returns its uuid
+   *
+   * @param user UserObject
+   * @return uuid of the user
+   */
   @Transactional(propagation = Propagation.REQUIRED)
   public String deleteUser(User user) {
     return userDao.removeUser(user).getUuid();
