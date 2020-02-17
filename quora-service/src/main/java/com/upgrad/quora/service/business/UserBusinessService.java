@@ -15,6 +15,13 @@ public class UserBusinessService {
   @Autowired private UserDao userDao;
   @Autowired private UserAuthTokenDao userAuthTokenDao;
 
+  /**
+   * This method returns userAuthTokenObject by accessToken
+   *
+   * @param accessToken accessToken
+   * @param msgWhenUserSignedOut msgWhenUserSignedOut
+   * @return UserAuthTokenObject
+   */
   public UserAuthToken getUserAuthByAccessToken(String accessToken, String msgWhenUserSignedOut)
       throws AuthorizationFailedException {
     UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);

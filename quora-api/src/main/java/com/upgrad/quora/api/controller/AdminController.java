@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 public class AdminController {
 
-  private static String MSG_WHEN_USER_SIGNED_OUT = "User is signed out";
-  private static String MSG_WHEN_USER_NOT_FOUND =
-      "User with entered uuid to be deleted does not exist";
-
   @Autowired private UserBusinessService userBusinessService;
   @Autowired private AdminService adminService;
 
@@ -34,9 +30,11 @@ public class AdminController {
       throws UserNotFoundException, AuthorizationFailedException {
 
     UserAuthToken userAuthToken =
-        userBusinessService.getUserAuthByAccessToken(authorization, MSG_WHEN_USER_SIGNED_OUT);
-    adminService.validateIfRoleIsAdmin(userAuthToken, userUuid);
-    User user = userBusinessService.getValidatedGivenUser(userUuid, MSG_WHEN_USER_NOT_FOUND);
+        userBusinessService.getUserAuthByAccessToken(authorization, "User is signed out");
+    adminService.validateIfRoleIsAdmin(userAuthToken);
+    User user =
+        userBusinessService.getValidatedGivenUser(
+            userUuid, "User with entered uuid to be deleted does not exist");
     String uuid = adminService.deleteUser(user);
     return new ResponseEntity<>(
         new SignupUserResponse().id(uuid).status("USER SUCCESSFULLY DELETED"), HttpStatus.OK);
