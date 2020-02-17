@@ -139,7 +139,7 @@ public class QuestionBusinessService {
     if (userAuthToken == null || userAuthToken.getAccessToken() == null) {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
     } else if (userAuthToken.getLogoutAt() != null
-        && userAuthToken.getLoginAt().isAfter(userAuthToken.getLogoutAt())) {
+        ) {
 
       throw new AuthorizationFailedException(
           ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_ALL_QUESTIONS_BY_USER);
