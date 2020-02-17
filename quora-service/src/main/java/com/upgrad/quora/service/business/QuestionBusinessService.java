@@ -12,30 +12,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.upgrad.quora.service.util.MessageKeys.*;
+
 /**
  * Author : Harika Etamukkala QuestionBusinessService will contain business logic related to
  * Question feature
  */
 @Service
 public class QuestionBusinessService {
-
-  public static final String USER_HAS_NOT_SIGNED_IN = "User has not signed in";
-  public static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION =
-      "User is signed out.Sign in first to post a question";
-  public static final String ONLY_THE_QUESTION_OWNER_CAN_EDIT_THE_QUESTION =
-      "Only the question owner can edit the question";
-  public static final String ONLY_THE_QUESTION_OWNER_OR_ADMIN_CAN_DELETE_THE_QUESTION =
-      "Only the question owner or admin can delete the question";
-  public static final String
-      USER_WITH_ENTERED_UUID_WHOSE_QUESTION_DETAILS_ARE_TO_BE_SEEN_DOES_NOT_EXIST =
-          "User with entered uuid whose question details are to be seen does not exist";
-  public static final String ATHR_001 = "ATHR-001";
-  public static final String ATHR_002 = "ATHR-002";
-  public static final String ATHR_003 = "ATHR-003";
-  public static final String QUES_001 = "QUES-001";
-  public static final String ENTERED_QUESTION_UUID_DOES_NOT_EXIST =
-      "Entered question uuid does not exist";
-  public static final String USR_001 = "USR-001";
 
   @Autowired private QuestionDao questionDao;
   @Autowired private UserAuthTokenDao userAuthTokenDao;
