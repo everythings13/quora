@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.upgrad.quora.service.util.MessageKeys.ADMIN;
+
 @Service
 public class AdminService {
 
-  private static String ADMIN = "admin";
   @Autowired private UserDao userDao;
 
   /**

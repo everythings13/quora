@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import static com.upgrad.quora.service.util.MessageKeys.*;
+
 @Service
 public class SignInAuthenticationService {
 
@@ -34,14 +36,14 @@ public class SignInAuthenticationService {
       final String username, final String password) throws AuthenticationFailedException {
     User user = userDao.getUserByUsername(username);
     if (user == null) {
-      throw new AuthenticationFailedException("ATH-001", "This username does not exist");
+      throw new AuthenticationFailedException(ATH_001,USERNAME_DOES_NOT_EXIST);
     }
     final String encryptedPassword = cryptographyProvider.encrypt(password, user.getSalt());
     if (encryptedPassword.equals(user.getPassword())) {
       UserAuthToken userAuthToken = getUserAuthToken(user, encryptedPassword);
       return userAuthTokenDao.persistUserAuthTokenEntity(userAuthToken);
     } else {
-      throw new AuthenticationFailedException("ATH-002", "Password Failed");
+      throw new AuthenticationFailedException(ATH_002, PASSWORD_FAILED);
     }
   }
 

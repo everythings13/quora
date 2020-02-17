@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 
+import static com.upgrad.quora.service.util.MessageKeys.SGR_001;
+import static com.upgrad.quora.service.util.MessageKeys.USER_NOT_SIGNED_IN;
+
 @Service
 public class SignOutService {
   @Autowired private UserAuthTokenDao userAuthTokenDao;
@@ -25,7 +28,7 @@ public class SignOutService {
       throws SignOutRestrictedException {
     UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);
     if (userAuthToken == null) {
-      throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
+      throw new SignOutRestrictedException(SGR_001, USER_NOT_SIGNED_IN);
     }
     userAuthToken.setLogoutAt(ZonedDateTime.now());
     userAuthTokenDao.persistUserAuthTokenEntity(userAuthToken);

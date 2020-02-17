@@ -3,7 +3,9 @@ package com.upgrad.quora.service.business;
 import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.dao.UserAuthTokenDao;
 import com.upgrad.quora.service.dao.UserDao;
-import com.upgrad.quora.service.entity.*;
+import com.upgrad.quora.service.entity.QuestionEntity;
+import com.upgrad.quora.service.entity.User;
+import com.upgrad.quora.service.entity.UserAuthToken;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.upgrad.quora.service.util.MessageKeys.*;
+
 /**
  * Author : Harika Etamukkala QuestionBusinessService will contain business logic related to
  * Question feature
@@ -19,30 +23,12 @@ import java.util.List;
 @Service
 public class QuestionBusinessService {
 
-  public static final String USER_HAS_NOT_SIGNED_IN = "User has not signed in";
-  public static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION =
-      "User is signed out.Sign in first to post a question";
-  public static final String ONLY_THE_QUESTION_OWNER_CAN_EDIT_THE_QUESTION =
-      "Only the question owner can edit the question";
-  public static final String ONLY_THE_QUESTION_OWNER_OR_ADMIN_CAN_DELETE_THE_QUESTION =
-      "Only the question owner or admin can delete the question";
-  public static final String
-      USER_WITH_ENTERED_UUID_WHOSE_QUESTION_DETAILS_ARE_TO_BE_SEEN_DOES_NOT_EXIST =
-          "User with entered uuid whose question details are to be seen does not exist";
-  public static final String ATHR_001 = "ATHR-001";
-  public static final String ATHR_002 = "ATHR-002";
-  public static final String ATHR_003 = "ATHR-003";
-  public static final String QUES_001 = "QUES-001";
-  public static final String ENTERED_QUESTION_UUID_DOES_NOT_EXIST =
-      "Entered question uuid does not exist";
-  public static final String USR_001 = "USR-001";
-
   @Autowired private QuestionDao questionDao;
   @Autowired private UserAuthTokenDao userAuthTokenDao;
   @Autowired private UserDao userDao;
 
   /**
-   * This method is used to create Question
+   * Returns QuestionEntity by creating new question
    *
    * @param accessToken
    * @param questionEntity
@@ -76,7 +62,7 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
     } else if (userAuthToken.getLogoutAt() != null) {
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_ALL_QUESTIONS);
     }
     return questionDao.getAllQuestions();
   }
@@ -98,7 +84,7 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
     } else if (userAuthToken.getLogoutAt() != null) {
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_EDIT_A_QUESTION);
     } else if (questionFromDb != null
         && !(questionFromDb.getUser().getUuid().equals(userAuthToken.getUser().getUuid()))) {
       throw new AuthorizationFailedException(
@@ -113,7 +99,7 @@ public class QuestionBusinessService {
   /**
    * @param questionId
    * @param accessToken
-   * @return
+   * @return delete question
    * @throws AuthorizationFailedException
    * @throws InvalidQuestionException
    */
@@ -121,14 +107,15 @@ public class QuestionBusinessService {
       throws AuthorizationFailedException, InvalidQuestionException {
     UserAuthToken userAuthToken = userAuthTokenDao.getUserAuthEntityByAccessToken(accessToken);
     QuestionEntity questionFromDb = questionDao.getQuestionById(questionId);
+    // checking whether access token provided by user exists or not
     if (userAuthToken == null || userAuthToken.getAccessToken() == null) {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
     } else if (userAuthToken.getLogoutAt() != null) {
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_DELETE_A_QUESTION);
     } else if (questionFromDb != null
         && (!(questionFromDb.getUser().getUuid().equals(userAuthToken.getUser().getUuid()))
-            || userAuthToken.getUser().getRole().equals("admin"))) {
+            || userAuthToken.getUser().getRole().equals(ADMIN))) {
       throw new AuthorizationFailedException(
           ATHR_003, ONLY_THE_QUESTION_OWNER_OR_ADMIN_CAN_DELETE_THE_QUESTION);
     } else if (questionFromDb == null) {
@@ -151,10 +138,11 @@ public class QuestionBusinessService {
 
     if (userAuthToken == null || userAuthToken.getAccessToken() == null) {
       throw new AuthorizationFailedException(ATHR_001, USER_HAS_NOT_SIGNED_IN);
-    } else if (userAuthToken.getLogoutAt() != null) {
+    } else if (userAuthToken.getLogoutAt() != null
+        ) {
 
       throw new AuthorizationFailedException(
-          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_A_QUESTION);
+          ATHR_002, USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_GET_ALL_QUESTIONS_BY_USER);
     }
     User userEntity = userDao.getUserByUuid(userId);
 

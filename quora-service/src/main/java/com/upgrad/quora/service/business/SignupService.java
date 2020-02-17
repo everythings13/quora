@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.upgrad.quora.service.util.MessageKeys.*;
+
 @Service
 public class SignupService {
 
@@ -42,11 +44,11 @@ public class SignupService {
     if (user != null) {
       if (userName.equals(user.getUserName())) {
         throw new SignUpRestrictedException(
-            "SGR-001", "Try any other Username, this Username has already been taken");
+            SGR_001, TRY_ANY_OTHER_USERNAME);
       }
       if (email.equals(user.getEmail())) {
         throw new SignUpRestrictedException(
-            "SGR-002", "This user has already been registered, try with any other emailId");
+            SGR_002, USER_ALREADY_REGISTERED);
       }
     }
   }
