@@ -1,7 +1,7 @@
 package com.upgrad.quora.api.controller;
 
 import com.upgrad.quora.api.model.*;
-import com.upgrad.quora.service.business.AnswerBusinessService;
+import com.upgrad.quora.service.business.AnswerBusiness;
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequestMapping("/")
 public class AnswerController {
 
-  @Autowired private AnswerBusinessService answerBusinessService;
+  @Autowired private AnswerBusiness answerBusiness;
 
   @RequestMapping(
       method = RequestMethod.POST,
@@ -38,7 +38,7 @@ public class AnswerController {
     answerEntity.setDate(ZonedDateTime.now());
     answerEntity.setUuid(UUID.randomUUID().toString());
     AnswerEntity createdAnswerEntity =
-        answerBusinessService.createAnswer(answerEntity, accessToken, questionUuid);
+        answerBusiness.createAnswer(answerEntity, accessToken, questionUuid);
     AnswerResponse response =
         new AnswerResponse().id(createdAnswerEntity.getUuid()).status("ANSWER CREATED");
 
@@ -56,7 +56,7 @@ public class AnswerController {
       final AnswerRequest answerRequest)
       throws AuthorizationFailedException, AnswerNotFoundException {
     AnswerEntity editedAnsweredEntity =
-        answerBusinessService.editAnswer(answerId, accessToken, answerRequest.getAnswer());
+        answerBusiness.editAnswer(answerId, accessToken, answerRequest.getAnswer());
     AnswerEditResponse answerEditResponse =
         new AnswerEditResponse().id(editedAnsweredEntity.getUuid()).status("ANSWER EDITED");
     return new ResponseEntity<>(answerEditResponse, HttpStatus.OK);
@@ -70,7 +70,7 @@ public class AnswerController {
       @PathVariable("answerId") final String answerId,
       @RequestHeader("authorization") final String accessToken)
       throws AuthorizationFailedException, AnswerNotFoundException {
-    String deletedAnswerUuid = answerBusinessService.deleteAnswer(answerId, accessToken);
+    String deletedAnswerUuid = answerBusiness.deleteAnswer(answerId, accessToken);
     AnswerDeleteResponse answerDeleteResponse =
         new AnswerDeleteResponse().id(deletedAnswerUuid).status("ANSWER DELETED");
     return new ResponseEntity<>(answerDeleteResponse, HttpStatus.OK);
@@ -85,7 +85,7 @@ public class AnswerController {
       @RequestHeader("authorization") final String accessToken)
       throws AuthorizationFailedException, InvalidQuestionException {
     List<AnswerEntity> answerEntities =
-        answerBusinessService.getAllAnswersForQuestion(accessToken, questionId);
+        answerBusiness.getAllAnswersForQuestion(accessToken, questionId);
     List<AnswerDetailsResponse> answerDetailsResponses = new ArrayList<>();
 
     answerEntities.stream()

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AnswerBusinessService {
+public class AnswerBusiness {
 
   private static final String USER_IS_SIGNED_OUT_SIGN_IN_FIRST_TO_POST_AN_ANSWER =
       "User is signed out.Sign in first to post an answer";
